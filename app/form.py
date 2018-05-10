@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
-from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
+from wtforms import StringField, PasswordField
+from wtforms import BooleanField, SubmitField, TextAreaField
+from wtforms.validators import ValidationError, DataRequired
+from wtforms.validators import Email, EqualTo, Length
 from wtforms.fields.html5 import EmailField
 from app.models import User
 
@@ -39,7 +41,7 @@ class EditProfileFom(FlaskForm):
     def __init__(self, original_username, *args, **kwargs):
         super(EditProfileFom, self).__init___(*args, **kwargs)
         self.original_username = original_username
-    
+
     def validate_username(self, username):
         if username.data != self.original_username:
             user = User.query.filter_by(username=username.data).first()
