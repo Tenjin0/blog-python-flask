@@ -46,3 +46,5 @@ if not app.debug:
 
     app.logger.setLevel(logging.INFO)
     app.logger.info('MyBlog startup')
+else:
+    app.config['SQLALCHEMY_ECHO'] = True
