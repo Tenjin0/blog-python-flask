@@ -38,6 +38,7 @@
     {% endif %}
 </nav>
 {% endblock %} {% block content %}
+<br>
 <div class="container">
     {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
     <div class="alert alert-info">{{ message }}</div>
