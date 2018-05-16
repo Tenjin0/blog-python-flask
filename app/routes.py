@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, g
 from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime
 from werkzeug.urls import url_parse
@@ -10,11 +10,13 @@ from app.forms import ResetPasswordRequestForm, ResetPasswordForm
 from app.email import send_password_reset_email
 from flask_babel import _, get_locale
 
+
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+    g.locale = str(get_locale())
 
 
 @app.route('/')
@@ -68,7 +70,7 @@ def login():
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         # flash('Login requested for user {}, remember_me={}'.format(
-            # form.username.data, form.remember_me.data))
+        # form.username.data, form.remember_me.data))
         next_page = request.args.get("next")
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
@@ -171,7 +173,8 @@ def reset_password_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
-        flash(_('Check your email for the instructions to reset your password'))
+        flash(_('Check your email for the \
+                instructions to reset your password'))
         return redirect(url_for('login'))
     return render_template('reset_password_request.html',
                            title=_('Reset Password'), form=form)
