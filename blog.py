@@ -1,5 +1,6 @@
 from app import app, db
 from app.models import User, Post
+from app import cli # noqa: E261, F401
 
 
 @app.shell_context_processor
