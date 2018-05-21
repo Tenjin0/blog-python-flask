@@ -26,7 +26,7 @@ babel = Babel()
 def create_app(config_class=Config):
 
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object(config_class)
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -76,8 +76,6 @@ def create_app(config_class=Config):
 
         app.logger.setLevel(logging.INFO)
         app.logger.info('MyBlog startup')
-    else:
-        app.config['SQLALCHEMY_ECHO'] = True
 
     return app
 
