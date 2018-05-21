@@ -16,6 +16,7 @@ flask-moment = "*"
 flask-babel = "*"
 jwt = "*"
 flask-wtf = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.6"
