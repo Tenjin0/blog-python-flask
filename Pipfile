@@ -17,6 +17,7 @@ flask-babel = "*"
 jwt = "*"
 flask-wtf = "*"
 python-dotenv = "*"
+elasticsearch = "*"
 
 [requires]
 python_version = "3.6"
