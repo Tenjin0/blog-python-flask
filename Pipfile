@@ -6,6 +6,7 @@ name = "pypi"
 [dev-packages]
 
 [packages]
+elasticsearch = "*"
 flask = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
@@ -14,10 +15,9 @@ flask-bootstrap = "*"
 flask-mail = "*"
 flask-moment = "*"
 flask-babel = "*"
+python-dotenv = "*"
 jwt = "*"
 flask-wtf = "*"
-python-dotenv = "*"
-elasticsearch = "*"
 
 [requires]
 python_version = "3.6"
