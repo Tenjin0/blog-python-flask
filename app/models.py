@@ -15,6 +15,26 @@ followers = db.Table('followers',
                      )
 
 
+class SearchableMixin(object):
+
+    @classmethod
+    def search(cls, expression, page, per_page):
+        pass
+
+    @classmethod
+    def before_commit(cls, session):
+        print(session.dirty)
+        pass
+
+    @classmethod
+    def after_commit(cls, session):
+        pass
+
+    @classmethod
+    def reindex(cls):
+        pass
+
+
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
@@ -82,15 +102,23 @@ class User(UserMixin, db.Model):
         return User.query.get(id)
 
 
-class Post(db.Model):
+class Post(SearchableMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     __searchable__ = ['body']
-    
+
     def __repr__(self):
         return '<Post {}>'.format(self.body)
+
+
+def my_before_commit(session):
+    print("before commit!")
+
+
+db.event.listen(db.session, 'before_commit', Post.before_commit)
+db.event.listen(db.session, 'after_commit', Post.after_commit)
 
 
 @login.user_loader
