@@ -25,6 +25,11 @@ babel = Babel()
 
 def create_app(config_class=Config):
 
+    logging.getLogger('elasticsearch').setLevel(logging.DEBUG)
+    logging.getLogger('urllib3').setLevel(logging.DEBUG)
+    tracer = logging.getLogger('elasticsearch.trace')
+    tracer.setLevel(logging.DEBUG)
+    tracer.addHandler(logging.FileHandler('indexer.log'))
     app = Flask(__name__)
     app.config.from_object(config_class)
 
@@ -36,7 +41,8 @@ def create_app(config_class=Config):
     moment.init_app(app)
     babel.init_app(app)
 
-    app.elasticsearch = Elasticsearch(app.config['ELASTICSEARCH_URL']) \
+    app.elasticsearch = Elasticsearch(app.config['ELASTICSEARCH_URL'],
+                                      propagate=True) \
         if app.config['ELASTICSEARCH_URL'] else None
 
     from app.errors import bp as errors_bp  # noqa: F401

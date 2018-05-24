@@ -5,6 +5,7 @@ from hashlib import md5
 from time import time
 import jwt
 from app import db, login
+from app.search import add_to_index, query_index, remove_from_index
 from flask import current_app
 
 followers = db.Table('followers',
@@ -19,20 +20,39 @@ class SearchableMixin(object):
 
     @classmethod
     def search(cls, expression, page, per_page):
-        pass
+        print(cls.__tablename__)
+        ids, total = query_index(cls.__tablename__, expression, page, per_page)
+        if total == 0:
+            return cls.query.filter_by(id=0), 0
 
     @classmethod
     def before_commit(cls, session):
-        print(session.dirty)
-        pass
+        print('new', session.new)
+        print("dirty", session.dirty)
+        print("deleted", session.deleted)
+        session._changes = {
+            'add': [obj for obj in session.new if isinstance(obj, cls)],
+            'update': [obj for obj in session.dirty if isinstance(obj, cls)],
+            'delete': [obj for obj in session.deleted if isinstance(obj, cls)]
+        }
 
     @classmethod
     def after_commit(cls, session):
-        pass
+        for obj in session._changes['add']:
+            print(obj)
+            add_to_index(cls.__tablename__, obj)
+        for obj in session._changes['update']:
+            print(obj)
+            add_to_index(cls.__tablename__, obj)
+        for obj in session._changes['delete']:
+            print(obj)
+            remove_from_index(cls.__tablename__, obj)
+        session._changes = None
 
     @classmethod
     def reindex(cls):
-        pass
+        for obj in cls.query:
+            add_to_index(cls.__tablename__, obj)
 
 
 class User(UserMixin, db.Model):
@@ -111,10 +131,6 @@ class Post(SearchableMixin, db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
-
-
-def my_before_commit(session):
-    print("before commit!")
 
 
 db.event.listen(db.session, 'before_commit', Post.before_commit)
