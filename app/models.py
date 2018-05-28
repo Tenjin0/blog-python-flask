@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from hashlib import md5
 from time import time
+import json
 import jwt
 from app import db, login
 from app.search import add_to_index, query_index, remove_from_index
@@ -31,9 +32,6 @@ class SearchableMixin(object):
 
     @classmethod
     def before_commit(cls, session):
-        print('new', session.new)
-        print("dirty", session.dirty)
-        print("deleted", session.deleted)
         session._changes = {
             'add': [obj for obj in session.new if isinstance(obj, cls)],
             'update': [obj for obj in session.dirty if isinstance(obj, cls)],
@@ -43,13 +41,10 @@ class SearchableMixin(object):
     @classmethod
     def after_commit(cls, session):
         for obj in session._changes['add']:
-            print(obj)
             add_to_index(cls.__tablename__, obj)
         for obj in session._changes['update']:
-            print(obj)
             add_to_index(cls.__tablename__, obj)
         for obj in session._changes['delete']:
-            print(obj)
             remove_from_index(cls.__tablename__, obj)
         session._changes = None
 
@@ -76,6 +71,24 @@ class User(UserMixin, db.Model):
         backref=db.backref('followers', lazy="dynamic"),
         lazy='dynamic'
     )
+    messages_sent = db.relationship(
+        "Message", foreign_keys="Message.sender_id",
+        backref='author', lazy="dynamic"
+    )
+    messages_received = db.relationship(
+        'Message', foreign_keys='Message.recipient_id',
+        backref='recipient', lazy='dynamic')
+    last_message_read_time = db.Column(db.DateTime)
+
+    notifications = db.relationship(
+        'Notification', foreign_keys='Notification.user_id', backref='user',
+        lazy='dynamic'
+    )
+
+    def new_messages(self):
+        last_read_time = self.last_message_read_time or datetime(1900, 1, 1)
+        return Message.query.filter_by(recipient=self).filter(
+            Message.timestamp > last_read_time).count()
 
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
@@ -140,6 +153,28 @@ class Post(SearchableMixin, db.Model):
 
 db.event.listen(db.session, 'before_commit', Post.before_commit)
 db.event.listen(db.session, 'after_commit', Post.after_commit)
+
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    body = db.Column(db.String(140))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    def __repr__(self):
+        return '<Message {}>'.format(self.body)
+
+
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    timestamp = db.Column(db.Float, index=True, default=time)
+    payload_json = db.Column(db.Text)
+
+    def get_data(self):
+        return json.loads(str(self.payload_json))
 
 
 @login.user_loader

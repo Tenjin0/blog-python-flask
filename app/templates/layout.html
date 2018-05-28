@@ -38,6 +38,15 @@
                 <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
             </li>
             {% endif %}
+            <li>
+                <a class="nav-link" href="{{url_for('main.messages')}}">
+                    {{ _('Messages')}}
+                    {% set new_messages = current_user.new_messages() %}
+                    {% if new_messages %}
+                        <span class="badge"> {{ new_messages }}</span>
+                    {% endif %}
+                </a>
+            </li>
         </ul>
     </div>
     {% if g.search_form %}

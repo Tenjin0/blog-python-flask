@@ -1,5 +1,5 @@
 from app import db, cli, create_app
-from app.models import User, Post
+from app.models import User, Post, Message, Notification
 
 
 app = create_app()
@@ -10,7 +10,8 @@ cli.register(app)
 def make_shell_context():
     print('make_shell_context')
     Post.search("post", 1, 3)
-    return {'db': db, 'User': User, 'Post': Post}
+    return {'db': db, 'User': User, 'Post': Post, 'Message': Message,
+            "Notification": Notification}
 
 
 if __name__ == "__main__":

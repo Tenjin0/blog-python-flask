@@ -3,8 +3,8 @@ from flask import render_template, flash, redirect, url_for, request, g, \
 from datetime import datetime
 from flask_login import current_user, login_required
 from app import db
-from app.models import User, Post
-from app.main.forms import EditProfileFom, PostForm, SearchForm
+from app.models import User, Post, Message
+from app.main.forms import EditProfileFom, PostForm, SearchForm, MessageForm
 from flask_babel import _, get_locale
 from app.main import bp
 
@@ -130,10 +130,8 @@ def search():
     if not g.search_form.validate():
         return redirect(url_for('main.explore'))
     page = request.args.get('page', 1, type=int)
-    print(g.search_form.q.data, current_app.config['POSTS_PER_PAGE'])
     posts, total = Post.search(g.search_form.q.data, page,
                                current_app.config['POSTS_PER_PAGE'])
-    print('enter router search', posts, total)
     next_url = url_for('main.search', q=g.search_form.q.data, page=page + 1) \
         if total > page * current_app.config["POSTS_PER_PAGE"] else None
     prev_url = url_for('main.search', q=g.search_form.q.data, page=page - 1) \
@@ -148,3 +146,36 @@ def search():
 def user_popup(id):
     user = User.query.get_or_404(id)
     return render_template('user_popup.html', user=user)
+
+
+@bp.route('/send_message/<recipient>', methods=['GET', 'POST'])
+@login_required
+def send_message(recipient):
+    user = User.query.filter_by(username=recipient).first_or_404()
+    form = MessageForm()
+    if form.validate_on_submit():
+        msg = Message(sender_id=current_user.id, recipient_id=user.id,
+                      body=form.message.data)
+        db.session.add(msg)
+        db.session.commit()
+        flash(_('Your message has been sent'))
+        return redirect(url_for('main.user', username=recipient))
+    return render_template('send_message.html', title=_('Send message'),
+                           form=form, recipient=recipient)
+
+
+@bp.route('/messages')
+@login_required
+def messages():
+    # current_user.last_message_read_time = datetime.utcnow()
+    # db.session.commit()
+    page = request.args.get('page', 1, type=int)
+    messages = current_user.messages_received.order_by(
+        Message.timestamp.desc()).paginate(
+            page, current_app.config['POSTS_PER_PAGE'], False)
+    next_url = url_for('main.messages', page=messages.next_num) \
+        if messages.has_next else None
+    prev_url = url_for('main.messages', page=messages.prev_num) \
+        if messages.has_prev else None
+    return render_template('messages.html', messages=messages.items,
+                           next_url=next_url, prev_url=prev_url)
