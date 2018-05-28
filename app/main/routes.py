@@ -146,5 +146,5 @@ def search():
 @bp.route('/user/<id>/popup')
 @login_required
 def user_popup(id):
-    user = User.query.filter_by(id=id).first_or_404()
+    user = User.query.get_or_404(id)
     return render_template('user_popup.html', user=user)
