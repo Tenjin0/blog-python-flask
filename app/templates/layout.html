@@ -3,16 +3,21 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
 {% endblock %}
-{% block title %} {% if title %} {{ title }} - My Blog {% else %} {{_('Welcome to My Blog')}}
-{% endif %} {% endblock %} {% block navbar %}
+{% block title %} 
+    {% if title %}
+        {{ title }} - My Blog 
+    {% else %}
+        {{_('Welcome to My Blog')}}
+    {% endif %} 
+{% endblock %} 
+{% block navbar %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">My Blog</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-        aria-label="Toggle navigation">
+    <a class="navbar-brand" href="#">Blog</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
                 <a class="nav-link" href="{{ url_for('main.index') }}">Home
                     <span class="sr-only">(current)</span>
@@ -32,12 +37,18 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
             </li>
+            {% endif %}
         </ul>
-
     </div>
+    {% if g.search_form %}
+        <form class="form-inline my-2 my-lg-0" method="get" action="{{ url_for('main.search' )}}">
+            {{ g.search_form.q(size=20, class='form-control mr-sm-2', placeholder=g.search_form.q.label.text)}}
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
     {% endif %}
 </nav>
-{% endblock %} {% block content %}
+{% endblock %}
+ {% block content %}
 <br>
 <div class="container">
     {% with messages = get_flashed_messages() %} {% if messages %} {% for message in messages %}
@@ -50,6 +61,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/static/js/home.js"></script>
 {{ moment.include_moment() }}
 {{ moment.lang(g.locale) }}
 {% endblock%}

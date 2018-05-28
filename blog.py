@@ -9,6 +9,7 @@ cli.register(app)
 @app.shell_context_processor
 def make_shell_context():
     print('make_shell_context')
+    Post.search("post", 1, 3)
     return {'db': db, 'User': User, 'Post': Post}
 
 

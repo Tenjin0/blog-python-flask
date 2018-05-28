@@ -4,7 +4,7 @@ from datetime import datetime
 from flask_login import current_user, login_required
 from app import db
 from app.models import User, Post
-from app.main.forms import EditProfileFom, PostForm
+from app.main.forms import EditProfileFom, PostForm, SearchForm
 from flask_babel import _, get_locale
 from app.main import bp
 
@@ -14,6 +14,7 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+        g.search_form = SearchForm()
     g.locale = str(get_locale())
 
 
@@ -121,3 +122,29 @@ def unfollow(username):
     db.session.commit()
     flash(_('You are not following %(username)s.', username=username))
     return redirect(url_for('main.user', username=username))
+
+
+@bp.route('/search')
+@login_required
+def search():
+    if not g.search_form.validate():
+        return redirect(url_for('main.explore'))
+    page = request.args.get('page', 1, type=int)
+    print(g.search_form.q.data, current_app.config['POSTS_PER_PAGE'])
+    posts, total = Post.search(g.search_form.q.data, page,
+                               current_app.config['POSTS_PER_PAGE'])
+    print('enter router search', posts, total)
+    next_url = url_for('main.search', q=g.search_form.q.data, page=page + 1) \
+        if total > page * current_app.config["POSTS_PER_PAGE"] else None
+    prev_url = url_for('main.search', q=g.search_form.q.data, page=page - 1) \
+        if page > 1 else None
+
+    return render_template('search.html', title=_('Search'), posts=posts,
+                           next_url=next_url, prev_url=prev_url)
+
+
+@bp.route('/user/<id>/popup')
+@login_required
+def user_popup(id):
+    user = User.query.filter_by(id=id).first_or_404()
+    return render_template('user_popup.html', user=user)

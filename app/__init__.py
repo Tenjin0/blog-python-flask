@@ -24,13 +24,12 @@ babel = Babel()
 
 
 def create_app(config_class=Config):
-
     logging.getLogger('elasticsearch').setLevel(logging.DEBUG)
     logging.getLogger('urllib3').setLevel(logging.DEBUG)
     tracer = logging.getLogger('elasticsearch.trace')
     tracer.setLevel(logging.DEBUG)
     tracer.addHandler(logging.FileHandler('indexer.log'))
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path="/static")
     app.config.from_object(config_class)
 
     db.init_app(app)
