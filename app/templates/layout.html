@@ -45,7 +45,7 @@
                     {{ _('Messages')}}
                     {% set new_messages = current_user.new_messages() %}
                     {% if new_messages %}
-                    <span class="badge badge-secondary badge-up">{{ new_messages }}</span>
+                    <span id="set_message_count" class="badge badge-secondary badge-up">{{ new_messages }}</span>
                     {% endif %}
                 </a>
             </li>
@@ -74,6 +74,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
 <script type="text/javascript" src="/static/js/home.js"></script>
+{% if current_user.is_authenticated%}
+<script type="text/javascript" src="/static/js/notification.js"></script>
+{% endif %}
 {{ moment.include_moment() }}
 {{ moment.lang(g.locale) }}
 {% endblock%}
