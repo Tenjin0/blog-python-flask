@@ -49,10 +49,8 @@ def explore():
         page, current_app.config['POSTS_PER_PAGE'], False)
     next_url = url_for('main.explore', page=posts.next_num) \
         if posts.has_next else None
-    print('has_next', posts.has_next)
     prev_url = url_for('main.explore', page=posts.prev_num) \
         if posts.has_prev else None
-    print('has_prev', posts.has_prev)
     return render_template('index.html', title=_("Explore"), posts=posts.items,
                            prev_url=prev_url, next_url=next_url)
 
@@ -157,6 +155,7 @@ def send_message(recipient):
         msg = Message(sender_id=current_user.id, recipient_id=user.id,
                       body=form.message.data)
         db.session.add(msg)
+        user.add_notification('unread_messages', user.new_messages() + 1)
         db.session.commit()
         flash(_('Your message has been sent'))
         return redirect(url_for('main.user', username=recipient))
@@ -168,7 +167,8 @@ def send_message(recipient):
 @login_required
 def messages():
     # current_user.last_message_read_time = datetime.utcnow()
-    # db.session.commit()
+    current_user.add_notification('unread_messages', 0)
+    db.session.commit()
     page = request.args.get('page', 1, type=int)
     messages = current_user.messages_received.order_by(
         Message.timestamp.desc()).paginate(

@@ -54,3 +54,21 @@ curl -H 'Content-Type: application/json' -XGET 'http://localhost:9200/post/post/
 #  "timed_out": false,
 #  "took": 1
 #}
+curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/post/post/17?pretty' -d '{
+  "body": "first post"
+}'
+#[201] (0.050s)
+#{
+#  "_id": "17",
+#  "_index": "post",
+#  "_primary_term": 4,
+#  "_seq_no": 1,
+#  "_shards": {
+#    "failed": 0,
+#    "successful": 1,
+#    "total": 2
+#  },
+#  "_type": "post",
+#  "_version": 1,
+#  "result": "created"
+#}
