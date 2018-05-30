@@ -85,6 +85,8 @@ class User(UserMixin, db.Model):
         lazy='dynamic'
     )
 
+    tasks = db.relationship('Task', backref='user', lazy='dynamic')
+
     def add_notification(self, name, data):
         self.notifications.filter_by(name=name).delete()
         n = Notification(name=name, payload_json=json.dumps(data), user=self)
@@ -187,7 +189,7 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(36), index=True)
     description = db.Column(db.String(128))
-    user_id = db.Column(db.Integer, db.ForeignKey('user_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     complete = db.Column(db.Boolean, default=False)
 
 

@@ -56,8 +56,7 @@ def create_app(config_class=Config):
     moment.init_app(app)
     babel.init_app(app)
 
-    app.elasticsearch = Elasticsearch(app.config['ELASTICSEARCH_URL'],
-                                      propagate=True) \
+    app.elasticsearch = Elasticsearch(app.config['ELASTICSEARCH_URL']) \
         if app.config['ELASTICSEARCH_URL'] else None
     celery.conf.update(BROKER_URL=app.config['REDIS_URL'],
                        CELERY_RESULT_BACKEND=app.config['REDIS_URL'])
