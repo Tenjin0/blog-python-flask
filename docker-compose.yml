@@ -9,10 +9,19 @@ services:
     ports:
       - 9200:9200
     networks:
-      - esnet
-
+      - blognet
+  redis:
+    image: 'redis:3.0-alpine'
+    command: redis-server --requirepass myblog
+    volumes:
+      - redisdata:/usr/share/redis/data
+    ports:
+      - '6379:6379'
+    networks:
+      - blognet
 volumes:
   esdata:
     driver: local
+  redisdata:
 networks:
-  esnet:
+  blognet:
