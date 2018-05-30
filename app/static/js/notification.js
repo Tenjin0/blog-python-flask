@@ -20,8 +20,8 @@
                     }
                     since = notifications[i].timestamp
                 }
-            }).catch(() => {
-
+            }).catch((e) => {
+                console.log(e.message)
             })
         }, 10000)
     }
