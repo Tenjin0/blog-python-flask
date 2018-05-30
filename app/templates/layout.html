@@ -45,7 +45,7 @@
                     {{ _('Messages')}}
                     {% set new_messages = current_user.new_messages() %}
                     {% if new_messages %}
-                    <span id="set_message_count" class="badge badge-secondary badge-up">{{ new_messages }}</span>
+                    <span id="message_count" class="badge badge-secondary badge-up">{{ new_messages }}</span>
                     {% endif %}
                 </a>
             </li>
