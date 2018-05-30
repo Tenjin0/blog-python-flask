@@ -7,6 +7,7 @@ from app.models import User, Post, Message, Notification
 from app.main.forms import EditProfileFom, PostForm, SearchForm, MessageForm
 from flask_babel import _, get_locale
 from app.main import bp
+from app.tasks import longtime_add
 
 
 @bp.before_request
@@ -192,3 +193,18 @@ def notifications():
         "data": n.get_data(),
         "timestamp": n.timestamp
     } for n in notifications])
+
+
+@bp.route("/test_task")
+def test_task():
+    result = longtime_add.delay(1, 2)
+
+    print('Task finished? ', result.ready())
+    print('Task result: ', result.result)
+    result.wait()
+    # now the task should be finished and ready method will return True
+    print('Task finished? ', result.ready())
+    print('Task result: ', result.result)
+    return jsonify({
+        "result": result.result
+    })

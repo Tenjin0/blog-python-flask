@@ -1,6 +1,4 @@
-from app import celery, create_app
-
+from app import create_app, celery  # noqa: F401
 
 app = create_app()
 app.app_context().push()
-print(app.config["CELERY_BROKER_URL"])
