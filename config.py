@@ -16,7 +16,6 @@ celery_get_manifest_schedule = {
 
 
 class Config(object):
-    CELERYBEAT_SCHEDULE = celery_get_manifest_schedule
     SECRET_KEY = os.environ.get("SECRET_KEY", "you-will-never-guess")
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
