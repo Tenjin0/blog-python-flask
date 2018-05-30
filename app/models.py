@@ -183,6 +183,14 @@ class Notification(db.Model):
         return json.loads(str(self.payload_json))
 
 
+class Task(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(36), index=True)
+    description = db.Column(db.String(128))
+    user_id = db.Column(db.Integer, db.ForeignKey('user_id'))
+    complete = db.Column(db.Boolean, default=False)
+
+
 @login.user_loader
 def load_user(id):
     return User.query.get(id)
