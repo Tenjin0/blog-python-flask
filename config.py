@@ -32,6 +32,6 @@ class Config(object):
     LANGUAGES = ['en', 'fr']
     ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL') or \
         'http://localhost:9200'
-    REDIS_URL = os.environ.get('REDIS_URL') or 'redis://localhost:6379'
+    REDIS_URL = os.environ.get('REDIS_URL')
     CELERY_BROKER_URL = REDIS_URL
     CELERY_RESULT_BACKEND = REDIS_URL

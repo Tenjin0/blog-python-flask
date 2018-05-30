@@ -1,4 +1,7 @@
-from app import create_app
+from flask import current_app
+from . import celery
 
-app = create_app()
-app.app_context().push()
+
+@celery.task()
+def add_together(a, b):
+    app = current_app._get_current_object()

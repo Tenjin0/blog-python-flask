@@ -12,8 +12,8 @@ from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
 from elasticsearch import Elasticsearch
 from celery import Celery
-from redis import redis
-from urlparse import urlparse
+# from redis import redis
+# from urlparse import urlparse
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -26,17 +26,17 @@ moment = Moment()
 babel = Babel()
 celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 
-# Set Redis connection:
-redis_url = urlparse.urlparse(Config.REDIS_URL)
-r = redis.StrictRedis(host=redis_url.hostname,
-                      port=redis_url.port, db=1, password=redis_url.password)
+# # Set Redis connection:
+# redis_url = urlparse.urlparse(Config.REDIS_URL)
+# r = redis.StrictRedis(host=redis_url.hostname,
+#                       port=redis_url.port, db=1, password=redis_url.password)
 
-# Test the Redis connection:
-try:
-    r.ping()
-    print("Redis is connected!")
-except redis.ConnectionError:
-    print("Redis connection error!")
+# # Test the Redis connection:
+# try:
+#     r.ping()
+#     print("Redis is connected!")
+# except redis.ConnectionError:
+#     print("Redis connection error!")
 
 
 def create_app(config_class=Config):
