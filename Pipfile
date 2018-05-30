@@ -20,6 +20,8 @@ jwt = "*"
 flask-wtf = "*"
 pylint = "*"
 "flake8" = "*"
+celery = "*"
+redis = "*"
 
 [requires]
 python_version = "3.6"

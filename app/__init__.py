@@ -11,6 +11,9 @@ from flask_mail import Mail
 from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
 from elasticsearch import Elasticsearch
+from celery import Celery
+from redis import redis
+from urlparse import urlparse
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -21,6 +24,19 @@ mail = Mail()
 bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
+celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
+
+# Set Redis connection:
+redis_url = urlparse.urlparse(Config.REDIS_URL)
+r = redis.StrictRedis(host=redis_url.hostname,
+                      port=redis_url.port, db=1, password=redis_url.password)
+
+# Test the Redis connection:
+try:
+    r.ping()
+    print("Redis is connected!")
+except redis.ConnectionError:
+    print("Redis connection error!")
 
 
 def create_app(config_class=Config):
@@ -43,6 +59,8 @@ def create_app(config_class=Config):
     app.elasticsearch = Elasticsearch(app.config['ELASTICSEARCH_URL'],
                                       propagate=True) \
         if app.config['ELASTICSEARCH_URL'] else None
+    celery.conf.update(BROKER_URL=app.config['REDIS_URL'],
+                       CELERY_RESULT_BACKEND=app.config['REDIS_URL'])
 
     from app.errors import bp as errors_bp  # noqa: F401
     app.register_blueprint(errors_bp)
