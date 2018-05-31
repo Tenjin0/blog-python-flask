@@ -3,20 +3,23 @@ import json
 import sys
 import time
 from flask import render_template
-from app import create_app, db, celery
-from app.celery import current_task
-from app.models import User, Post, Task
+from app import create_app, celery
+# from app.celery import current_task
+from app.models import User, Post
 from app.email import send_email
 
 app = create_app()
 app.app_context().push()
 
 
-@celery.task
-def longtime_add(x, y):
+@celery.task(bind=True)
+def longtime_add(self, x, y):
     print('long time task begins')
-    # sleep 10 seconds
-    time.sleep(10)
+    time.sleep(3)
+    self.update_state(state="PROGRESS", meta={'progress': 33})
+    time.sleep(3)
+    self.update_state(state="PROGRESS", meta={'progress': 66})
+    time.sleep(3)
     print('long time task finished')
     return x + y
 

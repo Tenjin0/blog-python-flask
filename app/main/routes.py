@@ -1,8 +1,9 @@
+import json
 from flask import render_template, flash, redirect, url_for, request, g, \
     current_app, jsonify
 from datetime import datetime
 from flask_login import current_user, login_required
-from app import db
+from app import db, celery
 from app.models import User, Post, Message, Notification
 from app.main.forms import EditProfileFom, PostForm, SearchForm, MessageForm
 from flask_babel import _, get_locale
@@ -198,13 +199,26 @@ def notifications():
 @bp.route("/test_task")
 def test_task():
     result = longtime_add.delay(1, 2)
-
+    longtime_add.apply_async(args=[10, 20], countdown=10)
+    print(result)
     print('Task finished? ', result.ready())
     print('Task result: ', result.result)
+    result.get(on_message=on_raw_message)
     result.wait()
     # now the task should be finished and ready method will return True
     print('Task finished? ', result.ready())
     print('Task result: ', result.result)
-    return jsonify({
-        "result": result.result
-    })
+    return jsonify([
+        {
+            "result": result.result
+        }
+    ])
+
+
+def on_raw_message(body):
+    i = celery.control.inspect()
+    print('active', json.dumps(i.active(), indent=4))
+    # print('active_queues', json.dumps(i.active_queues(), indent=4))
+    print('reserved', json.dumps(i.reserved(), indent=4))
+    print('scheduled', json.dumps(i.scheduled(), indent=4))
+    print(body)
