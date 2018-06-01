@@ -12,6 +12,7 @@ from flask_moment import Moment
 from flask_babel import Babel, lazy_gettext as _l
 from elasticsearch import Elasticsearch
 from celery import Celery
+from flask_socketio import SocketIO
 # from redis import redis
 # from urlparse import urlparse
 
@@ -25,7 +26,7 @@ bootstrap = Bootstrap()
 moment = Moment()
 babel = Babel()
 celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
-
+socketio = SocketIO()
 # # Set Redis connection:
 # redis_url = urlparse.urlparse(Config.REDIS_URL)
 # r = redis.StrictRedis(host=redis_url.hostname,
@@ -55,6 +56,7 @@ def create_app(config_class=Config):
     bootstrap.init_app(app)
     moment.init_app(app)
     babel.init_app(app)
+    socketio.init_app(app)
 
     app.elasticsearch = Elasticsearch(app.config['ELASTICSEARCH_URL']) \
         if app.config['ELASTICSEARCH_URL'] else None
@@ -112,3 +114,4 @@ def get_locale():
 
 
 from app import models  # noqa: F401
+from app import websocket  # noqa: F401

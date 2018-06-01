@@ -1,7 +1,6 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
-
 from app import db
 from app.auth import bp
 from app.models import User
@@ -23,7 +22,8 @@ def login():
             return redirect(url_for('auth.login'))
         login_user(user, remember=form.remember_me.data)
         # flash('Login requested for user {}, remember_me={}'.format(
-        # form.username.data, form.remember_me.data))
+        #     form.username.data, form.remember_me.data))
+        session['user_id'] = current_user.id
         next_page = request.args.get("next")
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('main.index')

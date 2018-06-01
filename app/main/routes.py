@@ -1,6 +1,6 @@
 import json
 from flask import render_template, flash, redirect, url_for, request, g, \
-    current_app, jsonify
+    current_app, jsonify, session
 from datetime import datetime
 from flask_login import current_user, login_required
 from app import db, celery
@@ -24,6 +24,7 @@ def before_request():
 @bp.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
+    print('session user_id', session['user_id'])
     form = PostForm()
     page = request.args.get('page', 1, type=int)
     posts = current_user.followed_posts().paginate(
@@ -216,6 +217,7 @@ def test_task():
 
 
 def on_raw_message(body):
+    print('session user_id', session['user_id'])
     i = celery.control.inspect()
     print('active', json.dumps(i.active(), indent=4))
     # print('active_queues', json.dumps(i.active_queues(), indent=4))
