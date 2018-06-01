@@ -5,12 +5,10 @@
     }
     window.onload = function () {
         var namespace = '/notifications'
-        var socket = io.connect(this.location.protocol + "//" + this.location.host + namespace, {
-            reconnection: false
-        })
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
         socket.on('connect', function() {
-            console.log('connect with websocket')
-        })
+            socket.emit('my event', {data: 'I\'m connected!'});
+        });
 
         socket.on('response', function(msg) {
             console.log(msg.meta);
