@@ -1,6 +1,5 @@
-from app import db, cli, create_app
+from app import db, cli, create_app, socketio
 from app.models import User, Post, Message, Notification, Task
-
 
 app = create_app()
 cli.register(app)
@@ -15,4 +14,4 @@ def make_shell_context():
 
 
 if __name__ == "__main__":
-    app.socketio.run(debug=True)
+    socketio.run(debug=True)

@@ -1,14 +1,14 @@
-import json
+# import json
 from flask import render_template, flash, redirect, url_for, request, g, \
     current_app, jsonify, session
 from datetime import datetime
 from flask_login import current_user, login_required
-from app import db, celery
-from app.models import User, Post, Message, Notification
+from app import db
+from app.models import Post, Message, Notification, User, Task
 from app.main.forms import EditProfileFom, PostForm, SearchForm, MessageForm
 from flask_babel import _, get_locale
 from app.main import bp
-from app.tasks import longtime_add
+from app.tasks import export_posts_task
 
 
 @bp.before_request
@@ -25,6 +25,7 @@ def before_request():
 @login_required
 def index():
     print('session user_id', session['user_id'])
+    print('session user_room', session['user_room'])
     form = PostForm()
     page = request.args.get('page', 1, type=int)
     posts = current_user.followed_posts().paginate(
@@ -197,30 +198,18 @@ def notifications():
     } for n in notifications])
 
 
-@bp.route("/test_task")
-def test_task():
-    result = longtime_add.delay(1, 2)
-    longtime_add.apply_async(args=[10, 20], countdown=10)
-    print(result)
-    print('Task finished? ', result.ready())
-    print('Task result: ', result.result)
-    result.get(on_message=on_raw_message)
-    result.wait()
-    # now the task should be finished and ready method will return True
-    print('Task finished? ', result.ready())
-    print('Task result: ', result.result)
-    return jsonify([
-        {
-            "result": result.result
-        }
-    ])
-
-
-def on_raw_message(body):
-    print('session user_id', session['user_id'])
-    i = celery.control.inspect()
-    print('active', json.dumps(i.active(), indent=4))
-    # print('active_queues', json.dumps(i.active_queues(), indent=4))
-    print('reserved', json.dumps(i.reserved(), indent=4))
-    print('scheduled', json.dumps(i.scheduled(), indent=4))
-    print(body)
+@bp.route("/export_posts")
+@login_required
+def export_posts():
+    # if current_user.get_task_in_progress('export_posts'):
+    #     flash(_('An export task is currently in progress'))
+    # else:
+    job = export_posts_task.delay(current_user.id, session['user_room'])
+    # job.get(on_message=on_task_progress)
+    print(job.id)
+    task = Task(id=job.id, name='export_posts', description=_(
+        'Exporting posts ...'), user=current_user)
+    db.session.add(task)
+    db.session.commit()
+    print('redirect')
+    return redirect(url_for('main.user', username=current_user.username))

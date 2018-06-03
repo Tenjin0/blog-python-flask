@@ -1,0 +1,108 @@
+curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/post/post/5?pretty' -d '{
+  "body": "premier post"
+}'
+curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/post/post/5?pretty' -d '{
+  "body": "premier post"
+}'
+#[201] (0.265s)
+#{
+#  "_id": "5",
+#  "_index": "post",
+#  "_primary_term": 2,
+#  "_seq_no": 0,
+#  "_shards": {
+#    "failed": 0,
+#    "successful": 1,
+#    "total": 2
+#  },
+#  "_type": "post",
+#  "_version": 1,
+#  "result": "created"
+#}
+#[201] (0.265s)
+#{
+#  "_id": "5",
+#  "_index": "post",
+#  "_primary_term": 2,
+#  "_seq_no": 0,
+#  "_shards": {
+#    "failed": 0,
+#    "successful": 1,
+#    "total": 2
+#  },
+#  "_type": "post",
+#  "_version": 1,
+#  "result": "created"
+#}
+curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/post/post/6?pretty' -d '{
+  "body": "deuxieme post"
+}'
+curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/post/post/6?pretty' -d '{
+  "body": "deuxieme post"
+}'
+#[201] (0.145s)
+#{
+#  "_id": "6",
+#  "_index": "post",
+#  "_primary_term": 2,
+#  "_seq_no": 6,
+#  "_shards": {
+#    "failed": 0,
+#    "successful": 1,
+#    "total": 2
+#  },
+#  "_type": "post",
+#  "_version": 1,
+#  "result": "created"
+#}
+#[201] (0.145s)
+#{
+#  "_id": "6",
+#  "_index": "post",
+#  "_primary_term": 2,
+#  "_seq_no": 6,
+#  "_shards": {
+#    "failed": 0,
+#    "successful": 1,
+#    "total": 2
+#  },
+#  "_type": "post",
+#  "_version": 1,
+#  "result": "created"
+#}
+curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/post/post/7?pretty' -d '{
+  "body": "troisieme post"
+}'
+curl -H 'Content-Type: application/json' -XPUT 'http://localhost:9200/post/post/7?pretty' -d '{
+  "body": "troisieme post"
+}'
+#[201] (0.135s)
+#{
+#  "_id": "7",
+#  "_index": "post",
+#  "_primary_term": 2,
+#  "_seq_no": 3,
+#  "_shards": {
+#    "failed": 0,
+#    "successful": 1,
+#    "total": 2
+#  },
+#  "_type": "post",
+#  "_version": 1,
+#  "result": "created"
+#}
+#[201] (0.135s)
+#{
+#  "_id": "7",
+#  "_index": "post",
+#  "_primary_term": 2,
+#  "_seq_no": 3,
+#  "_shards": {
+#    "failed": 0,
+#    "successful": 1,
+#    "total": 2
+#  },
+#  "_type": "post",
+#  "_version": 1,
+#  "result": "created"
+#}

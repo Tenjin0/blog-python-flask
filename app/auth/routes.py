@@ -24,6 +24,7 @@ def login():
         # flash('Login requested for user {}, remember_me={}'.format(
         #     form.username.data, form.remember_me.data))
         session['user_id'] = current_user.id
+        session['user_room'] = 'room_{}'.format(session['user_id'])
         next_page = request.args.get("next")
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('main.index')

@@ -8,6 +8,8 @@ import jwt
 from app import db, login
 from app.search import add_to_index, query_index, remove_from_index
 from flask import current_app
+# from app.tasks import export_posts, on_task_progress
+
 
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer,
@@ -138,6 +140,24 @@ class User(UserMixin, db.Model):
             current_app.config['SECRET_KEY'],
             algorithm='HS256').decode('utf-8')
 
+    def launch_task(self, name, description, *args, **kwargs):
+        pass
+        return None
+        # job = export_posts.delay()
+        # id = job.request.id
+        # job.get(on_demand=on_task_progress)
+        # print('id:{}'.format(id))
+        # task = Task(id=id, name=name, description=description, user=self)
+        # db.session.add(task)
+        # return task
+
+    def get_task_in_progress(self, name):
+        return Task.query.filter_by(name=name, user=self,
+                                    complete=False).first()
+
+    def get_tasks_in_progress(self):
+        return Task.query.filter_by(user=self, complete=False).all()
+
     @staticmethod
     def verify_reset_password_token(token):
         try:
@@ -186,12 +206,16 @@ class Notification(db.Model):
 
 
 class Task(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(36), primary_key=True)
     name = db.Column(db.String(36), index=True)
     description = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     complete = db.Column(db.Boolean, default=False)
 
+    def get_progress(self):
+        return 0
+        # job = self.get_rq_job()
+        # return job.meta.get('progress', 0) if job is not None else 100
 
 @login.user_loader
 def load_user(id):

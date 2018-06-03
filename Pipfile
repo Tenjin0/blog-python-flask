@@ -25,6 +25,7 @@ redis = "*"
 flask-socketio = "*"
 gevent = "*"
 flask-session = "*"
+eventlet = "*"
 
 [requires]
 python_version = "3.6"

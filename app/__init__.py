@@ -1,4 +1,5 @@
 import logging
+import eventlet
 import os
 from flask import Flask, request, current_app
 from config import Config
@@ -13,8 +14,6 @@ from flask_babel import Babel, lazy_gettext as _l
 from elasticsearch import Elasticsearch
 from celery import Celery
 from flask_socketio import SocketIO
-# from redis import redis
-# from urlparse import urlparse
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -27,6 +26,8 @@ moment = Moment()
 babel = Babel()
 celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 socketio = SocketIO()
+eventlet.monkey_patch()
+
 # # Set Redis connection:
 # redis_url = urlparse.urlparse(Config.REDIS_URL)
 # r = redis.StrictRedis(host=redis_url.hostname,
@@ -49,15 +50,6 @@ def create_app(config_class=Config):
     app = Flask(__name__, static_url_path="/static")
     app.config.from_object(config_class)
 
-    db.init_app(app)
-    migrate.init_app(app, db)
-    login.init_app(app)
-    mail.init_app(app)
-    bootstrap.init_app(app)
-    moment.init_app(app)
-    babel.init_app(app)
-    socketio.init_app(app)
-
     app.elasticsearch = Elasticsearch(app.config['ELASTICSEARCH_URL']) \
         if app.config['ELASTICSEARCH_URL'] else None
     celery.conf.update(BROKER_URL=app.config['REDIS_URL'],
@@ -71,6 +63,16 @@ def create_app(config_class=Config):
 
     from app.main import bp as main_bp  # noqa: F401
     app.register_blueprint(main_bp)
+
+    db.init_app(app)
+    migrate.init_app(app, db)
+    login.init_app(app)
+    mail.init_app(app)
+    bootstrap.init_app(app)
+    moment.init_app(app)
+    babel.init_app(app)
+    socketio.init_app(app, async_mode='eventlet',
+                      message_queue=app.config['REDIS_URL'])
 
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:
