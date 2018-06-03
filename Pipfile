@@ -23,7 +23,6 @@ pylint = "*"
 celery = "*"
 redis = "*"
 flask-socketio = "*"
-gevent = "*"
 flask-session = "*"
 eventlet = "*"
 
