@@ -27,7 +27,6 @@ babel = Babel()
 celery = Celery(__name__, broker=Config.CELERY_BROKER_URL)
 socketio = SocketIO()
 eventlet.monkey_patch()
-
 # # Set Redis connection:
 # redis_url = urlparse.urlparse(Config.REDIS_URL)
 # r = redis.StrictRedis(host=redis_url.hostname,
@@ -50,6 +49,14 @@ def create_app(config_class=Config):
     app = Flask(__name__, static_url_path="/static")
     app.config.from_object(config_class)
 
+    db.init_app(app)
+    migrate.init_app(app, db)
+    login.init_app(app)
+    mail.init_app(app)
+    bootstrap.init_app(app)
+    moment.init_app(app)
+    babel.init_app(app)
+
     app.elasticsearch = Elasticsearch(app.config['ELASTICSEARCH_URL']) \
         if app.config['ELASTICSEARCH_URL'] else None
     celery.conf.update(BROKER_URL=app.config['REDIS_URL'],
@@ -64,13 +71,9 @@ def create_app(config_class=Config):
     from app.main import bp as main_bp  # noqa: F401
     app.register_blueprint(main_bp)
 
-    db.init_app(app)
-    migrate.init_app(app, db)
-    login.init_app(app)
-    mail.init_app(app)
-    bootstrap.init_app(app)
-    moment.init_app(app)
-    babel.init_app(app)
+    from app.api import bp as api_bp, api   # noqa: F401
+    app.register_blueprint(api_bp)
+
     socketio.init_app(app, async_mode='eventlet',
                       message_queue=app.config['REDIS_URL'])
 
