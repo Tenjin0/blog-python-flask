@@ -71,8 +71,8 @@ def create_app(config_class=Config):
     from app.main import bp as main_bp  # noqa: F401
     app.register_blueprint(main_bp)
 
-    from app.api import bp as api_bp, api   # noqa: F401
-    app.register_blueprint(api_bp)
+    from app.api import bp as api_bp   # noqa: F401
+    app.register_blueprint(api_bp, url_prefix='/api')
 
     socketio.init_app(app, async_mode='eventlet',
                       message_queue=app.config['REDIS_URL'])

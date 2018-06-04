@@ -26,6 +26,7 @@ flask-socketio = "*"
 flask-session = "*"
 eventlet = "*"
 flask-restful = "*"
+httpie = "*"
 
 [requires]
 python_version = "3.6"
