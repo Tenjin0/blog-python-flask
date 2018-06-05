@@ -27,6 +27,7 @@ flask-session = "*"
 eventlet = "*"
 flask-restful = "*"
 httpie = "*"
+flask-httpauth = "*"
 
 [requires]
 python_version = "3.6"
