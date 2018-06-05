@@ -1,0 +1,55 @@
+{
+    "info": {
+        "title": "My Awesome API",
+        "version": "1.0.42",
+        "description": "You know, for devs"
+    },
+    "paths": {
+        "/api/users/{id}": {
+            "get": {
+                "summary": "Foo-Bar endpoint.",
+                "description": "Get a single foo with the bar ID.",
+                "parameters": [
+                    {
+                        "name": "bar_id",
+                        "in": "path",
+                        "description": "Bar ID",
+                        "type": "integer",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Foo object to be returned.",
+                        "schema": {
+                            "$ref": "#/definitions/Foo"
+                        }
+                    },
+                    "404": {
+                        "description": "Foo not found."
+                    }
+                }
+            }
+        }
+    },
+    "tags": [],
+    "swagger": "2.0",
+    "definitions": {
+        "Foo": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            },
+            "required": [
+                "name"
+            ]
+        }
+    },
+    "parameters": {}
+}

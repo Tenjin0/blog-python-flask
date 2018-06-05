@@ -28,6 +28,10 @@ eventlet = "*"
 flask-restful = "*"
 httpie = "*"
 flask-httpauth = "*"
+apispec = "*"
+marshmallow = "*"
+flasgger = "*"
+flask-swagger-ui = "*"
 
 [requires]
 python_version = "3.6"

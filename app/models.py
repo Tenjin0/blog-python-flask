@@ -176,7 +176,7 @@ class User(PaginatedAPIMixin, UserMixin, db.Model):
         self.token = base64.b64encode(os.urandom(24)).decode('utf-8')
         self.token_expiration = now + timedelta(exprires_in)
         db.session.add(self)
-        return self.token_expiration
+        return self.token
 
     def revoke_token(self):
         self.token_expiration = datetime.utcnow() - timedelta(seconds=1)
