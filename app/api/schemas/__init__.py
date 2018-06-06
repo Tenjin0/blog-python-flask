@@ -1,1 +1,1 @@
-from app.api.schemas.foo import FooSchema
+from app.api.schemas.users import UserApiSchema, LinkSchema

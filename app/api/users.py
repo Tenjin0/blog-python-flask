@@ -9,7 +9,7 @@ from app.api.errors import bad_request
 from app.api.auth import token_auth
 
 
-@bp.route('/users/<id>', methods=['GET'])
+@bp.route('/users/<int:id>', methods=['GET'])
 @token_auth.login_required
 def get_user(id):
     """ Cool Foo-Bar route.
@@ -18,7 +18,8 @@ def get_user(id):
         summary: Foo-Bar endpoint.
         description: Get a single foo with the bar ID.
         parameters:
-            - name: id
+            - in: path
+              name: id
               description: ID of the user
               type: integer
               required: true

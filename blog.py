@@ -47,8 +47,9 @@ app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 cli.register(app)
 
 from app.api.users import get_user
-from app.api.schemas import FooSchema
-spec.definition('Foo', schema=FooSchema)
+from app.api.schemas import UserApiSchema, LinkSchema
+spec.definition('Links', schema=LinkSchema)
+spec.definition('User', schema=UserApiSchema)
 
 with app.test_request_context():
     spec.add_path(view=get_user)
