@@ -8,6 +8,23 @@ from app import db
 from app.api.errors import bad_request
 from app.api.auth import token_auth
 
+# {
+#     "_links": {
+#         "avatar": "https://www.gravatar.com/avatar/5a3f2bbc4a48a3b65438890ecb202aba?d=identicon&s=128",
+#         "followed": "/api/users/1/followed",
+#         "followers": "/api/users/1/followers",
+#         "self": "/api/users/1"
+#     },
+#     "about_me": "About me",
+#     "followed_count": 0,
+#     "follower_count": 0,
+#     "id": 1,
+#     "last_seen": null,
+#     "post_count": 12,
+#     "username": "toto"
+# }
+
+
 
 @bp.route('/users/<int:id>', methods=['GET'])
 @token_auth.login_required
@@ -27,6 +44,8 @@ def get_user(id):
             200:
                 description: Foo object to be returned.
                 schema: UserApiSchema
+                examples:
+
             404:
                 description: Foo not found.
     """

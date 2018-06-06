@@ -38,7 +38,7 @@
         "Links": {
             "type": "object",
             "properties": {
-                "followed": {
+                "self": {
                     "type": "string",
                     "format": "url"
                 },
@@ -50,7 +50,7 @@
                     "type": "string",
                     "format": "url"
                 },
-                "self": {
+                "followed": {
                     "type": "string",
                     "format": "url"
                 }
@@ -59,7 +59,7 @@
         "User": {
             "type": "object",
             "properties": {
-                "followed_count": {
+                "id": {
                     "type": "integer",
                     "format": "int32"
                 },
@@ -67,12 +67,9 @@
                     "type": "string",
                     "format": "date"
                 },
-                "id": {
+                "post_count": {
                     "type": "integer",
                     "format": "int32"
-                },
-                "username": {
-                    "type": "string"
                 },
                 "follower_count": {
                     "type": "integer",
@@ -81,10 +78,13 @@
                 "_links": {
                     "$ref": "#/definitions/Links"
                 },
+                "username": {
+                    "type": "string"
+                },
                 "about_me": {
                     "type": "string"
                 },
-                "post_count": {
+                "followed_count": {
                     "type": "integer",
                     "format": "int32"
                 }
