@@ -8,23 +8,6 @@ from app import db
 from app.api.errors import bad_request
 from app.api.auth import token_auth
 
-# {
-#     "_links": {
-#         "avatar": "https://www.gravatar.com/avatar/5a3f2bbc4a48a3b65438890ecb202aba?d=identicon&s=128",
-#         "followed": "/api/users/1/followed",
-#         "followers": "/api/users/1/followers",
-#         "self": "/api/users/1"
-#     },
-#     "about_me": "About me",
-#     "followed_count": 0,
-#     "follower_count": 0,
-#     "id": 1,
-#     "last_seen": null,
-#     "post_count": 12,
-#     "username": "toto"
-# }
-
-
 
 @bp.route('/users/<int:id>', methods=['GET'])
 @token_auth.login_required
@@ -34,6 +17,8 @@ def get_user(id):
     get:
         summary: Foo-Bar endpoint.
         description: Get a single foo with the bar ID.
+        security:
+            - bearerAuth: []
         parameters:
             - in: path
               name: id
@@ -45,7 +30,20 @@ def get_user(id):
                 description: Foo object to be returned.
                 schema: UserApiSchema
                 examples:
-
+                    about_me:
+                        value: "About me"
+                    followed_count:
+                        value: 0
+                    follower_count:
+                        value: 0
+                    id:
+                        value: 1
+                    last_seen:
+                        value: null
+                    post_count:
+                        value: 12
+                    username:
+                        value: "toto"
             404:
                 description: Foo not found.
     """

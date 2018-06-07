@@ -9,6 +9,11 @@
             "get": {
                 "summary": "Foo-Bar endpoint.",
                 "description": "Get a single foo with the bar ID.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "parameters": [
                     {
                         "in": "path",
@@ -22,7 +27,30 @@
                     "200": {
                         "description": "Foo object to be returned.",
                         "schema": {
-                            "$ref": "#/definitions/User"
+                            "$ref": "#/components/schemas/UserApi"
+                        },
+                        "examples": {
+                            "about_me": {
+                                "value": "About me"
+                            },
+                            "followed_count": {
+                                "value": 0
+                            },
+                            "follower_count": {
+                                "value": 0
+                            },
+                            "id": {
+                                "value": 1
+                            },
+                            "last_seen": {
+                                "value": null
+                            },
+                            "post_count": {
+                                "value": 12
+                            },
+                            "username": {
+                                "value": "toto"
+                            }
                         }
                     },
                     "404": {
@@ -33,67 +61,14 @@
         }
     },
     "tags": [],
-    "swagger": "2.0",
-    "definitions": {
-        "Links": {
-            "type": "object",
-            "properties": {
-                "self": {
-                    "type": "string",
-                    "format": "url"
-                },
-                "followers": {
-                    "type": "string",
-                    "format": "url"
-                },
-                "avatar": {
-                    "type": "string",
-                    "format": "url"
-                },
-                "followed": {
-                    "type": "string",
-                    "format": "url"
-                }
+    "openapi": "3.0",
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
             }
-        },
-        "User": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "format": "int32"
-                },
-                "last_seen": {
-                    "type": "string",
-                    "format": "date"
-                },
-                "post_count": {
-                    "type": "integer",
-                    "format": "int32"
-                },
-                "follower_count": {
-                    "type": "integer",
-                    "format": "int32"
-                },
-                "_links": {
-                    "$ref": "#/definitions/Links"
-                },
-                "username": {
-                    "type": "string"
-                },
-                "about_me": {
-                    "type": "string"
-                },
-                "followed_count": {
-                    "type": "integer",
-                    "format": "int32"
-                }
-            },
-            "required": [
-                "about_me",
-                "username"
-            ]
         }
-    },
-    "parameters": {}
+    }
 }

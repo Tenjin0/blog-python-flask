@@ -4,31 +4,27 @@ from app.models import User, Post, Message, Notification, Task
 from apispec import APISpec
 from flask_swagger_ui import get_swaggerui_blueprint
 
+SWAGGER_URL = '/api'
+API_URL = 'http://localhost:5000/static/swagger.json'
 
-SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
-API_URL = 'http://localhost:5000/static/swagger.json'  # Our API url (can of course be a local resource)
-
-# Call factory function to create our blueprint
 swaggerui_blueprint = get_swaggerui_blueprint(
-    SWAGGER_URL,  # Swagger UI static files will be mapped to '{SWAGGER_URL}/dist/'
+    SWAGGER_URL,
     API_URL,
     config={  # Swagger UI config overrides
         'app_name': "Test application"
-    },
-    # oauth_config={  # OAuth config. See https://github.com/swagger-api/swagger-ui#oauth2-configuration .
-    #    'clientId': "your-client-id",
-    #    'clientSecret': "your-client-secret-if-required",
-    #    'realm': "your-realms",
-    #    'appName': "your-app-name",
-    #    'scopeSeparator': " ",
-    #    'additionalQueryStringParams': {'test': "hello"}
-    # }
+    }
 )
 
-# Register blueprint at URL
-# (URL must match the one given to factory function above)
+components = {
+  "securitySchemes": {
+    "bearerAuth": {
+      "type": "http",
+      "scheme": "bearer",
+      "bearerFormat": "JWT"
+    } 
+  }
+}
 
-# Create spec
 spec = APISpec(
     title='My Awesome API',
     version='1.0.42',
@@ -38,12 +34,13 @@ spec = APISpec(
     plugins=[
         'apispec.ext.flask',
         'apispec.ext.marshmallow'
-    ]
+    ],
+    openapi_version="3.0",
+    components=components
 )
 
 app = create_app()
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
-
 cli.register(app)
 
 from app.api.users import get_user
