@@ -12,11 +12,11 @@ from app.api.auth import token_auth
 @bp.route('/users/<int:id>', methods=['GET'])
 @token_auth.login_required
 def get_user(id):
-    """ Cool Foo-Bar route.
+    """ user route.
     ---
     get:
-        summary: Foo-Bar endpoint.
-        description: Get a single foo with the bar ID.
+        summary: User endpoint.
+        description: Get user by ID.
         security:
             - bearerAuth: []
         parameters:
@@ -27,7 +27,7 @@ def get_user(id):
               required: true
         responses:
             200:
-                description: Foo object to be returned.
+                description: User object to be returned.
                 schema: UserApiSchema
                 examples:
                     about_me:
@@ -45,7 +45,7 @@ def get_user(id):
                     username:
                         value: "toto"
             404:
-                description: Foo not found.
+                description: User not found.
     """
     return jsonify(User.query.get_or_404(id).to_dict())
 
@@ -53,6 +53,30 @@ def get_user(id):
 @bp.route('/users', methods=['GET'])
 @token_auth.login_required
 def get_users():
+    """ User list route.
+    ---
+    get:
+        summary: User endpoint.
+        description: Get users list.
+        security:
+            - bearerAuth: []
+        parameters:
+            - in: query
+              name: page
+              description: The page yout want to access
+              type: integer
+            - in: query
+              name: per_page
+              description: The numbers of User to return
+              type: integer
+        responses:
+            200:
+                description: User object to be returned.
+                schema: UserListApiSchema
+
+            404:
+                description: User not found.
+    """
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
     data = User.to_collection_dict(User.query, page, per_page, 'api.get_users')

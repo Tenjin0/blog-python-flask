@@ -9,6 +9,13 @@ class LinkSchema(Schema):
     avatar = fields.Url()
 
 
+class MetaSchema(Schema):
+    page = fields.Int()
+    per_page = fields.Int()
+    total_items = fields.Int()
+    total_pages = fields.Int()
+
+
 class UserApiSchema(Schema):
     id = fields.Int()
     username = fields.Str(required=True)
@@ -18,6 +25,13 @@ class UserApiSchema(Schema):
     follower_count = fields.Int()
     followed_count = fields.Int()
     _links = fields.Nested(LinkSchema)
+
+
+class UserListApiSchema(Schema):
+    items = fields.Nested(UserApiSchema, many=True)
+    _meta = fields.Nested(MetaSchema)
+    _links = fields.Nested(LinkSchema)
+
 # 'id': self.id,
 # 'username': self.username,
 # 'last_seen': self.last_me.isoformat() + 'Z'

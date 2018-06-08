@@ -10,19 +10,19 @@ API_URL = 'http://localhost:5000/static/swagger.json'
 swaggerui_blueprint = get_swaggerui_blueprint(
     SWAGGER_URL,
     API_URL,
-    config={  # Swagger UI config overrides
+    config={
         'app_name': "Test application"
     }
 )
 
 components = {
-  "securitySchemes": {
-    "bearerAuth": {
-      "type": "http",
-      "scheme": "bearer",
-      "bearerFormat": "JWT"
-    } 
-  }
+    "securitySchemes": {
+        "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        }
+    }
 }
 
 spec = APISpec(
@@ -36,20 +36,29 @@ spec = APISpec(
         'apispec.ext.marshmallow'
     ],
     openapi_version="3.0",
-    components=components
+    # components=components
 )
 
 app = create_app()
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 cli.register(app)
 
-from app.api.users import get_user
-from app.api.schemas import UserApiSchema, LinkSchema
-spec.definition('Links', schema=LinkSchema)
+from app.api.users import get_user, get_users  # noqa: F401
+from app.api.schemas.users import LinkSchema, UserListApiSchema  # noqa: F401
+from app.api.schemas.users import UserApiSchema, MetaSchema  # noqa: F401
 spec.definition('User', schema=UserApiSchema)
+spec.definition('Users', schema=UserListApiSchema)
+spec.definition('Links', schema=LinkSchema)
+spec.definition('Meta', schema=MetaSchema)
+# spec.definition('securitySchemes', {"bearerAuth": {
+#             "type": "http",
+#             "scheme": "bearer",
+#             "bearerFormat": "JWT"
+#         }})
 
 with app.test_request_context():
     spec.add_path(view=get_user)
+    # spec.add_path(view=get_users)
 
 # We're good to: go! Save this to a file for now.
 with open('app/static/swagger.json', 'w') as f:
