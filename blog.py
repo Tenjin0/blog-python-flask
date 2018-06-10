@@ -15,16 +15,6 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     }
 )
 
-components = {
-    "securitySchemes": {
-        "bearerAuth": {
-            "type": "http",
-            "scheme": "bearer",
-            "bearerFormat": "JWT"
-        }
-    }
-}
-
 spec = APISpec(
     title='My Awesome API',
     version='1.0.42',
@@ -36,33 +26,61 @@ spec = APISpec(
         'apispec.ext.marshmallow'
     ],
     openapi_version="3.0",
-    # components=components
+    securityDefinitions={
+        "bearerAuth": {
+            "description": "",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
 )
 
 app = create_app()
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 cli.register(app)
 
-from app.api.users import get_user, get_users  # noqa: F401
+from app.api.users import get_user, get_users   # noqa: F401
+from app.api.users import create_user, update_user   # noqa: F401
+from app.api.users import get_followers, get_followed  # noqa: F401
+from app.api.tokens import get_token  # noqa: F401
 from app.api.schemas.users import LinkSchema, UserListApiSchema  # noqa: F401
 from app.api.schemas.users import UserApiSchema, MetaSchema  # noqa: F401
+from app.api.schemas.users import UserPostApiSchema  # noqa: F401
+from app.api.schemas.users import UserPutApiSchema  # noqa: F401
+from app.api.schemas.users import TokenApiSchema  # noqa: F401
 spec.definition('User', schema=UserApiSchema)
 spec.definition('Users', schema=UserListApiSchema)
 spec.definition('Links', schema=LinkSchema)
 spec.definition('Meta', schema=MetaSchema)
-# spec.definition('securitySchemes', {"bearerAuth": {
-#             "type": "http",
-#             "scheme": "bearer",
-#             "bearerFormat": "JWT"
-#         }})
+spec.definition('CreateUser', schema=UserPostApiSchema)
+spec.definition('UpdateUser', schema=UserPutApiSchema)
+spec.definition('Token', schema=TokenApiSchema)
 
 with app.test_request_context():
     spec.add_path(view=get_user)
-    # spec.add_path(view=get_users)
+    spec.add_path(view=get_users)
+    spec.add_path(view=get_followers)
+    spec.add_path(view=get_followed)
+    spec.add_path(view=create_user)
+    spec.add_path(view=update_user)
+    spec.add_path(view=get_token)
 
 # We're good to: go! Save this to a file for now.
 with open('app/static/swagger.json', 'w') as f:
-    json.dump(spec.to_dict(), f, indent=4)
+    spec_gen = spec.to_dict()
+    spec_gen['components']['securitySchemes'] = {
+        "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT"
+        },
+        "basicAuth": {
+            "type": "http",
+            "scheme": "basic"
+        }
+    }
+    json.dump(spec_gen, f, indent=4)
 
 
 @app.shell_context_processor

@@ -57,6 +57,198 @@
                         "description": "User not found."
                     }
                 }
+            },
+            "put": {
+                "summary": "Update an existing user.",
+                "description": "Update a existing user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "required": false,
+                        "name": "user",
+                        "schema": {
+                            "$ref": "#/components/schemas/UpdateUser"
+                        },
+                        "description": "The user to create."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Updated"
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/users": {
+            "get": {
+                "summary": "User endpoint.",
+                "description": "Get users list.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "description": "The page yout want to access",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "query",
+                        "name": "per_page",
+                        "description": "The numbers of User to return",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User object to be returned.",
+                        "schema": {
+                            "$ref": "#/components/schemas/Users"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            },
+            "post": {
+                "summary": "Creates a new user.",
+                "description": "Creates a new user.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "required": false,
+                        "name": "user",
+                        "schema": {
+                            "$ref": "#/components/schemas/CreateUser"
+                        },
+                        "description": "The user to create."
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/users/{id}/followers": {
+            "get": {
+                "summary": "User followers endpoint.",
+                "description": "Get followers list.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "description": "The page yout want to access",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "query",
+                        "name": "per_page",
+                        "description": "The numbers of User to return",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User followers object to be returned.",
+                        "schema": {
+                            "$ref": "#/components/schemas/Users"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/users/{id}/followed": {
+            "get": {
+                "summary": "User followed endpoint.",
+                "description": "Get followed list.",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "description": "The page yout want to access",
+                        "type": "integer"
+                    },
+                    {
+                        "in": "query",
+                        "name": "per_page",
+                        "description": "The numbers of User to return",
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User followers object to be returned.",
+                        "schema": {
+                            "$ref": "#/components/schemas/Users"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
+            }
+        },
+        "/api/tokens": {
+            "get": {
+                "summary": "User followed endpoint.",
+                "description": "Get followed list.",
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token to use for other api route",
+                        "schema": {
+                            "$ref": "#/components/schemas/Token"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found."
+                    }
+                }
             }
         }
     },
@@ -67,19 +259,24 @@
             "User": {
                 "type": "object",
                 "properties": {
-                    "id": {
+                    "post_count": {
                         "type": "integer",
                         "format": "int32"
-                    },
-                    "username": {
-                        "type": "string"
-                    },
-                    "about_me": {
-                        "type": "string"
                     },
                     "follower_count": {
                         "type": "integer",
                         "format": "int32"
+                    },
+                    "last_seen": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "about_me": {
+                        "type": "string"
                     },
                     "followed_count": {
                         "type": "integer",
@@ -88,13 +285,8 @@
                     "_links": {
                         "$ref": "#/components/schemas/Links"
                     },
-                    "last_seen": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "post_count": {
-                        "type": "integer",
-                        "format": "int32"
+                    "username": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -105,9 +297,6 @@
             "Users": {
                 "type": "object",
                 "properties": {
-                    "_meta": {
-                        "$ref": "#/components/schemas/Meta"
-                    },
                     "_links": {
                         "$ref": "#/components/schemas/Links"
                     },
@@ -116,17 +305,16 @@
                         "items": {
                             "$ref": "#/components/schemas/User"
                         }
+                    },
+                    "_meta": {
+                        "$ref": "#/components/schemas/Meta"
                     }
                 }
             },
             "Links": {
                 "type": "object",
                 "properties": {
-                    "followers": {
-                        "type": "string",
-                        "format": "url"
-                    },
-                    "avatar": {
+                    "followed": {
                         "type": "string",
                         "format": "url"
                     },
@@ -134,7 +322,11 @@
                         "type": "string",
                         "format": "url"
                     },
-                    "followed": {
+                    "followers": {
+                        "type": "string",
+                        "format": "url"
+                    },
+                    "avatar": {
                         "type": "string",
                         "format": "url"
                     }
@@ -143,7 +335,7 @@
             "Meta": {
                 "type": "object",
                 "properties": {
-                    "total_items": {
+                    "page": {
                         "type": "integer",
                         "format": "int32"
                     },
@@ -155,22 +347,79 @@
                         "type": "integer",
                         "format": "int32"
                     },
-                    "page": {
+                    "total_items": {
                         "type": "integer",
                         "format": "int32"
                     }
                 }
             },
-            "securitySchemes": {
+            "CreateUser": {
+                "type": "object",
                 "properties": {
-                    "bearerAuth": {
-                        "type": "http",
-                        "scheme": "bearer",
-                        "bearerFormat": "JWT"
+                    "password": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "about_me": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "password",
+                    "username"
+                ]
+            },
+            "UpdateUser": {
+                "type": "object",
+                "properties": {
+                    "password": {
+                        "type": "string"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "about_me": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Token": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string"
                     }
                 }
             }
         },
-        "parameters": {}
+        "parameters": {},
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            },
+            "basicAuth": {
+                "type": "http",
+                "scheme": "basic"
+            }
+        }
+    },
+    "securityDefinitions": {
+        "bearerAuth": {
+            "description": "",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }

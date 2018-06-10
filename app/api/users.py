@@ -12,7 +12,7 @@ from app.api.auth import token_auth
 @bp.route('/users/<int:id>', methods=['GET'])
 @token_auth.login_required
 def get_user(id):
-    """ user route.
+    """ retrieve user route.
     ---
     get:
         summary: User endpoint.
@@ -77,6 +77,7 @@ def get_users():
             404:
                 description: User not found.
     """
+
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
     data = User.to_collection_dict(User.query, page, per_page, 'api.get_users')
@@ -86,6 +87,31 @@ def get_users():
 @bp.route('/users/<int:id>/followers', methods=['GET'])
 @token_auth.login_required
 def get_followers(id):
+    """ User followers list route.
+    ---
+    get:
+        summary: User followers endpoint.
+        description: Get followers list.
+        security:
+            - bearerAuth: []
+        parameters:
+            - in: query
+              name: page
+              description: The page yout want to access
+              type: integer
+            - in: query
+              name: per_page
+              description: The numbers of User to return
+              type: integer
+        responses:
+            200:
+                description: User followers object to be returned.
+                schema: UserListApiSchema
+
+            404:
+                description: User not found.
+    """
+
     user = User.query.get_or_404(id)
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
@@ -97,6 +123,30 @@ def get_followers(id):
 @bp.route('/users/<int:id>/followed', methods=['GET'])
 @token_auth.login_required
 def get_followed(id):
+    """ User followed list route.
+    ---
+    get:
+        summary: User followed endpoint.
+        description: Get followed list.
+        security:
+            - bearerAuth: []
+        parameters:
+            - in: query
+              name: page
+              description: The page yout want to access
+              type: integer
+            - in: query
+              name: per_page
+              description: The numbers of User to return
+              type: integer
+        responses:
+            200:
+                description: User followers object to be returned.
+                schema: UserListApiSchema
+
+            404:
+                description: User not found.
+    """
     user = User.query.get_or_404(id)
     page = request.args.get('page', 1, type=int)
     per_page = min(request.args.get('per_page', 10, type=int), 100)
@@ -108,6 +158,26 @@ def get_followed(id):
 @bp.route('/users', methods=['POST'])
 @token_auth.login_required
 def create_user():
+    """ Create user route.
+    ---
+    post:
+      summary: Creates a new user.
+      description: Creates a new user.
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: The user to create.
+          schema: UserPostApiSchema
+      responses:
+        201:
+          description: Created
+        404:
+          description: User not found.
+    """
     data = request.get_json() or {}
     if 'username' not in data or 'email' not in data or 'password' not in data:
         return bad_request('must include username, email and password fields')
@@ -128,6 +198,26 @@ def create_user():
 @bp.route('/users/<int:id>', methods=['PUT'])
 @token_auth.login_required
 def update_user(id):
+    """ Update user route.
+    ---
+    put:
+      summary: Update an existing user.
+      description: Update a existing user.
+      security:
+        - bearerAuth: []
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: user
+          description: The user to create.
+          schema: UserPutApiSchema
+      responses:
+        200:
+          description: Updated
+        404:
+          description: User not found.
+    """
     user = User.query.get_or_404(id)
     data = request.get_json() or {}
     if 'username' in data and data['username'] != user.username and \

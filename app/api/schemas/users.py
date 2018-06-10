@@ -16,6 +16,20 @@ class MetaSchema(Schema):
     total_pages = fields.Int()
 
 
+class UserPostApiSchema(Schema):
+    username = fields.Str(required=True)
+    email = fields.Str(required=True)
+    password = fields.Str(required=True)
+    about_me = fields.Str()
+
+
+class UserPutApiSchema(Schema):
+    username = fields.Str()
+    email = fields.Str()
+    password = fields.Str()
+    about_me = fields.Str()
+
+
 class UserApiSchema(Schema):
     id = fields.Int()
     username = fields.Str(required=True)
@@ -31,6 +45,10 @@ class UserListApiSchema(Schema):
     items = fields.Nested(UserApiSchema, many=True)
     _meta = fields.Nested(MetaSchema)
     _links = fields.Nested(LinkSchema)
+
+
+class TokenApiSchema(Schema):
+    token = fields.String()
 
 # 'id': self.id,
 # 'username': self.username,
