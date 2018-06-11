@@ -19,13 +19,35 @@ services:
       - '6379:6379'
     networks:
       - blognet
+  db:
+    image: mariadb:latest
+    container_name: myblog-db
+    environment:
+      MYSQL_ROOT_PASSWORD: yoda
+      MYSQL_DATABASE: myblog
+      MYSQL_USER: user
+      MYSQL_PASSWORD: yoda
+    volumes:
+      - dbdata:/usr/share/mariadb/data
+    restart: on-failure
+    ports:
+      - "3306:3306"
+    networks:
+      - blognet
   web:
     build: .
     ports:
       - "5000:5000"
+    networks:
+      - blognet
+    depends_on:
+      - db
+      - redis
+      - elasticsearch
 volumes:
   esdata:
     driver: local
   redisdata:
+  dbdata:
 networks:
   blognet:

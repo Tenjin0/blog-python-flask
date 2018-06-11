@@ -69,17 +69,7 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "required": false,
-                        "name": "user",
-                        "schema": {
-                            "$ref": "#/components/schemas/UpdateUser"
-                        },
-                        "description": "The user to create."
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "Updated"
@@ -136,17 +126,7 @@
                 "consumes": [
                     "application/json"
                 ],
-                "parameters": [
-                    {
-                        "in": "body",
-                        "required": false,
-                        "name": "user",
-                        "schema": {
-                            "$ref": "#/components/schemas/CreateUser"
-                        },
-                        "description": "The user to create."
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "201": {
                         "description": "Created"
@@ -259,34 +239,34 @@
             "User": {
                 "type": "object",
                 "properties": {
-                    "post_count": {
+                    "followed_count": {
                         "type": "integer",
                         "format": "int32"
                     },
-                    "follower_count": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "last_seen": {
-                        "type": "string",
-                        "format": "date"
+                    "username": {
+                        "type": "string"
                     },
                     "id": {
                         "type": "integer",
                         "format": "int32"
                     },
-                    "about_me": {
-                        "type": "string"
-                    },
-                    "followed_count": {
+                    "post_count": {
                         "type": "integer",
                         "format": "int32"
                     },
                     "_links": {
                         "$ref": "#/components/schemas/Links"
                     },
-                    "username": {
+                    "follower_count": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "about_me": {
                         "type": "string"
+                    },
+                    "last_seen": {
+                        "type": "string",
+                        "format": "date"
                     }
                 },
                 "required": [
@@ -300,21 +280,21 @@
                     "_links": {
                         "$ref": "#/components/schemas/Links"
                     },
+                    "_meta": {
+                        "$ref": "#/components/schemas/Meta"
+                    },
                     "items": {
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/User"
                         }
-                    },
-                    "_meta": {
-                        "$ref": "#/components/schemas/Meta"
                     }
                 }
             },
             "Links": {
                 "type": "object",
                 "properties": {
-                    "followed": {
+                    "avatar": {
                         "type": "string",
                         "format": "url"
                     },
@@ -326,7 +306,7 @@
                         "type": "string",
                         "format": "url"
                     },
-                    "avatar": {
+                    "followed": {
                         "type": "string",
                         "format": "url"
                     }
@@ -339,11 +319,11 @@
                         "type": "integer",
                         "format": "int32"
                     },
-                    "per_page": {
+                    "total_pages": {
                         "type": "integer",
                         "format": "int32"
                     },
-                    "total_pages": {
+                    "per_page": {
                         "type": "integer",
                         "format": "int32"
                     },
@@ -356,16 +336,16 @@
             "CreateUser": {
                 "type": "object",
                 "properties": {
-                    "password": {
+                    "about_me": {
                         "type": "string"
                     },
-                    "username": {
+                    "password": {
                         "type": "string"
                     },
                     "email": {
                         "type": "string"
                     },
-                    "about_me": {
+                    "username": {
                         "type": "string"
                     }
                 },
@@ -378,16 +358,16 @@
             "UpdateUser": {
                 "type": "object",
                 "properties": {
-                    "password": {
+                    "about_me": {
                         "type": "string"
                     },
-                    "username": {
+                    "password": {
                         "type": "string"
                     },
                     "email": {
                         "type": "string"
                     },
-                    "about_me": {
+                    "username": {
                         "type": "string"
                     }
                 }

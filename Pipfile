@@ -33,6 +33,7 @@ marshmallow = "*"
 flasgger = "*"
 flask-swagger-ui = "*"
 gunicorn = "*"
+pymysql = "*"
 
 [requires]
 python_version = "3.6"
