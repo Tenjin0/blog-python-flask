@@ -32,6 +32,7 @@ apispec = "*"
 marshmallow = "*"
 flasgger = "*"
 flask-swagger-ui = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.6"
