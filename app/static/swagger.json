@@ -239,20 +239,12 @@
             "User": {
                 "type": "object",
                 "properties": {
-                    "followed_count": {
-                        "type": "integer",
-                        "format": "int32"
+                    "last_seen": {
+                        "type": "string",
+                        "format": "date"
                     },
-                    "username": {
+                    "about_me": {
                         "type": "string"
-                    },
-                    "id": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "post_count": {
-                        "type": "integer",
-                        "format": "int32"
                     },
                     "_links": {
                         "$ref": "#/components/schemas/Links"
@@ -261,12 +253,20 @@
                         "type": "integer",
                         "format": "int32"
                     },
-                    "about_me": {
+                    "id": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "followed_count": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "username": {
                         "type": "string"
                     },
-                    "last_seen": {
-                        "type": "string",
-                        "format": "date"
+                    "post_count": {
+                        "type": "integer",
+                        "format": "int32"
                     }
                 },
                 "required": [
@@ -277,9 +277,6 @@
             "Users": {
                 "type": "object",
                 "properties": {
-                    "_links": {
-                        "$ref": "#/components/schemas/Links"
-                    },
                     "_meta": {
                         "$ref": "#/components/schemas/Meta"
                     },
@@ -288,13 +285,16 @@
                         "items": {
                             "$ref": "#/components/schemas/User"
                         }
+                    },
+                    "_links": {
+                        "$ref": "#/components/schemas/Links"
                     }
                 }
             },
             "Links": {
                 "type": "object",
                 "properties": {
-                    "avatar": {
+                    "followed": {
                         "type": "string",
                         "format": "url"
                     },
@@ -302,11 +302,11 @@
                         "type": "string",
                         "format": "url"
                     },
-                    "followers": {
+                    "avatar": {
                         "type": "string",
                         "format": "url"
                     },
-                    "followed": {
+                    "followers": {
                         "type": "string",
                         "format": "url"
                     }
@@ -315,19 +315,19 @@
             "Meta": {
                 "type": "object",
                 "properties": {
-                    "page": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
-                    "total_pages": {
-                        "type": "integer",
-                        "format": "int32"
-                    },
                     "per_page": {
                         "type": "integer",
                         "format": "int32"
                     },
+                    "page": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
                     "total_items": {
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "total_pages": {
                         "type": "integer",
                         "format": "int32"
                     }
@@ -336,10 +336,10 @@
             "CreateUser": {
                 "type": "object",
                 "properties": {
-                    "about_me": {
+                    "password": {
                         "type": "string"
                     },
-                    "password": {
+                    "about_me": {
                         "type": "string"
                     },
                     "email": {
@@ -358,10 +358,10 @@
             "UpdateUser": {
                 "type": "object",
                 "properties": {
-                    "about_me": {
+                    "password": {
                         "type": "string"
                     },
-                    "password": {
+                    "about_me": {
                         "type": "string"
                     },
                     "email": {

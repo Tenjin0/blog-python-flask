@@ -83,11 +83,11 @@ def create_app(config_class=Config):
             if app.config['MAIL_USERNAME'] or app.config["MAIL_PASSWORD"]:
                 auth = (app.config['MAIL_USERNAME'],
                         app.config['MAIL_PASSWORD'])
-            secure = None
+            secure = False
             if app.config['MAIL_USE_TLS']:
                 secure = ()
             mail_handler = SMTPHandler(
-                mailhost=(app.config['MAIL_SERVER', app.config['MAIL_PORT']]),
+                mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
                 fromaddr='no-reply@' + app.config["MAIL_SERVER"],
                 toaddrs=app.config['ADMINS'], subject="My Blog failure",
                 credentials=auth, secure=secure
