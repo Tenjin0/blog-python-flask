@@ -1,15 +1,15 @@
-FROM python:3.6-alpine
+FROM python:latest
 
-RUN adduser -D myblog
+RUN adduser myblog
 
 WORKDIR /home/myblog
 
 COPY app app
 COPY migrations migrations
 COPY Pipfile Pipfile.lock blog.py config.py celery_worker.py boot.sh .env ./
-# RUN pip install pipenv
+RUN pip install pipenv
 # RUN pipenv install gunicorn
-# RUN pipenv install
+RUN pipenv install
 
 
 ENV FLASK_APP blog.py
