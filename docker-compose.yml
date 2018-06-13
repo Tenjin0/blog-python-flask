@@ -6,7 +6,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
     container_name: elasticsearch
     volumes:
-      - esdata:/usr/share/elasticsearch/data
+      - esdata:/var/lib/elasticsearch/data
     ports:
       - 9200:9200
     networks:
@@ -16,7 +16,7 @@ services:
     image: 'redis:3.0-alpine'
     command: redis-server --requirepass myblog
     volumes:
-      - redisdata:/usr/share/redis/data
+      - redisdata:/var/lib/redis/data
     ports:
       - '6379:6379'
     networks:
@@ -30,7 +30,7 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: yoda
     volumes:
-      - dbdata:/usr/share/mariadb/data
+      - dbdata:/var/lib/mariadb/data
     restart: on-failure
     ports:
       - "3306:3306"
@@ -38,19 +38,26 @@ services:
       - blognet
   web:
     container_name: myblog-web
+    command: ./boot.sh
     build: .
     ports:
       - "5000:5000"
     networks:
       - blognet
-    links:
+    depends_on:
       - dbserver
       - redis
       - elasticsearch
+  celery:
+    container_name: myblog-celery
+    build: .
+    command: celery worker -A celery_worker.celery --loglevel=info
 volumes:
   esdata:
     driver: local
   redisdata:
+    driver: local
   dbdata:
+    driver: local
 networks:
   blognet:

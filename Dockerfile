@@ -24,5 +24,3 @@ RUN chown -R flask:flaskgroup ./
 RUN chmod +x boot.sh
 USER flask
 EXPOSE 5000
-ENTRYPOINT [ "source $(pipenv --venv)/bin/activate" ]
-CMD [ "./boot.sh" ]
