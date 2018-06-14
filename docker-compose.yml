@@ -24,6 +24,12 @@ services:
   dbserver:
     image: mariadb:latest
     container_name: myblog-db
+    restart: always
+    healthcheck:
+      test:  "/usr/bin/mysql --user=user --password=yoda --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 1s
+      retries: 5
     environment:
       MYSQL_ROOT_PASSWORD: yoda
       MYSQL_DATABASE: myblog
@@ -38,20 +44,27 @@ services:
       - blognet
   web:
     container_name: myblog-web
-    command: ./boot.sh
+    # command: ./boot.sh
     build: .
     ports:
       - "5000:5000"
     networks:
       - blognet
-    depends_on:
-      - dbserver
-      - redis
-      - elasticsearch
+    # links:
+    #   - dbserver
+    #   - redis
+    #   - elasticsearch
+    # depends_on:
+    #   - dbserver
   celery:
     container_name: myblog-celery
     build: .
     command: celery worker -A celery_worker.celery --loglevel=info
+    links:
+      - redis
+    depends_on:
+      - web
+      - redis
 volumes:
   esdata:
     driver: local

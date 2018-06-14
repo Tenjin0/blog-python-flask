@@ -1,5 +1,5 @@
 #!/bin/sh
-source $(pipenv --venv)/bin/activate
+# source $(pipenv --venv)/bin/activate
 flask db upgrade
 # flask translate compile
 flask run --host=0.0.0.0

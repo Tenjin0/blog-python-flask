@@ -1,0 +1,9 @@
+.git/
+.vscode/
+draft/
+.gitignore
+run.sh
+tests.py
+**/*.pyc
+*.log
+app.db
