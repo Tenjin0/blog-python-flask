@@ -6,7 +6,7 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:6.2.4
     container_name: elasticsearch
     volumes:
-      - esdata:/var/lib/elasticsearch/data
+      - esdata:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
     networks:
@@ -36,8 +36,8 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: yoda
     volumes:
-      - dbdata:/var/lib/mariadb/data
-    restart: on-failure
+      - dbdata:/var/lib/mysqls
+    restart: always
     ports:
       - "3306:3306"
     networks:
@@ -64,13 +64,11 @@ services:
     links:
       - redis
     depends_on:
-      - web
       - redis
 volumes:
   esdata:
     driver: local
   redisdata:
-    driver: local
   dbdata:
     driver: local
 networks:
